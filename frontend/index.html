@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyWebsite</title>
+    <link rel="icon" href="/common/icon/favicon.ico" type="image/x-icon">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('/common/img/tt.jpg');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+      
+        /* .glass-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(1px);
+            z-index: -1;
+        } */
+        
+        .sidebar {
+            position: fixed;
+            left: -180px;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            z-index: 1000;
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar:hover {
+            left: 0;
+        }
+
+        .sidebar-inner {
+            width: 180px;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+        }
+
+        .sidebar-hint {
+            width: 28px;
+            min-width: 28px;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 0 8px 8px 0;
+            color: #aaa;
+            font-size: 12px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 3px;
+            cursor: default;
+            user-select: none;
+            transition: all 0.4s ease;
+            animation: hint-pulse 3s ease-in-out infinite;
+        }
+
+        .sidebar:hover .sidebar-hint {
+            opacity: 0.25;
+            animation: none;
+        }
+
+        .nav-menu {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-item {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            margin: 2px 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .nav-icon img {
+            width: 24px;
+            height: 24px;
+            object-fit: contain;
+        }
+
+        .nav-text {
+            color: #fff;
+            margin-left: 15px;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left: -150px;
+            }
+            .sidebar-inner {
+                width: 150px;
+            }
+            .sidebar-hint {
+                width: 24px;
+                min-width: 24px;
+                font-size: 11px;
+            }
+            .nav-icon {
+                width: 25px;
+                height: 25px;
+                font-size: 14px;
+            }
+        }
+        
+        /* Right Sidebar */
+        .right-sidebar {
+            position: fixed;
+            right: -300px;
+            top: 20px;
+            width: 300px;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 10px 0 0 10px;
+            padding: 20px;
+            transition: right 0.3s ease;
+            z-index: 999;
+        }
+        
+        .right-sidebar.active {
+            right: 0;
+        }
+        
+        .sidebar-toggle {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            width: 50px;
+            height: 50px;
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-toggle:hover {
+            background: rgba(26, 26, 26, 0.9);
+        }
+        
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .form-group label {
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .form-group input {
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn {
+            padding: 10px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        /* JMcomicDownloader样式 */
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* 进度条样式 */
+        .loading {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 4px solid #fff;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #fff;
+            font-size: 14px;
+        }
+
+        /* ========== Model Balance Sidebar ========== */
+        .balance-sidebar-wrapper {
+            position: fixed;
+            right: -310px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 998;
+            display: flex;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .balance-sidebar-wrapper:hover {
+            right: 0;
+        }
+
+        .balance-hint {
+            width: 28px;
+            min-width: 28px;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 8px 0 0 8px;
+            color: #aaa;
+            font-size: 12px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 3px;
+            cursor: default;
+            user-select: none;
+            transition: all 0.4s ease;
+            animation: hint-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes hint-pulse {
+            0%, 100% { color: #aaa; }
+            50% { color: #eee; }
+        }
+
+        .balance-sidebar-wrapper:hover .balance-hint {
+            opacity: 0.25;
+            animation: none;
+        }
+
+        .balance-panel {
+            width: 310px;
+            background: rgba(26, 26, 26, 0.85);
+            backdrop-filter: blur(15px);
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .balance-title {
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            letter-spacing: 1px;
+        }
+
+        .balance-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .balance-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.3s ease;
+            transform: translateX(8px);
+            opacity: 0.85;
+        }
+
+        .balance-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.15);
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .balance-sidebar-wrapper:hover .balance-item {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .balance-sidebar-wrapper:hover .balance-item:nth-child(1) { transition-delay: 0.06s; }
+        .balance-sidebar-wrapper:hover .balance-item:nth-child(2) { transition-delay: 0.12s; }
+        .balance-sidebar-wrapper:hover .balance-item:nth-child(3) { transition-delay: 0.18s; }
+        .balance-sidebar-wrapper:hover .balance-item:nth-child(4) { transition-delay: 0.24s; }
+        .balance-sidebar-wrapper:hover .balance-item:nth-child(5) { transition-delay: 0.30s; }
+
+        .balance-dot {
+            width: 10px;
+            height: 10px;
+            min-width: 10px;
+            border-radius: 50%;
+            margin-right: 12px;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .balance-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .balance-name {
+            color: #ddd;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .balance-sub {
+            color: #777;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .balance-amount {
+            color: #fff;
+            font-size: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .balance-sidebar-wrapper {
+                right: -260px;
+            }
+            .balance-panel {
+                width: 260px;
+                padding: 16px 14px;
+            }
+            .balance-hint {
+                width: 24px;
+                min-width: 24px;
+                font-size: 11px;
+            }
+        }
+
+        /* ========== Bind Button & Loading ========== */
+        .bind-btn {
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 5px;
+            color: #ccc;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .bind-btn:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: #fff;
+        }
+
+        .cred-edit {
+            font-size: 12px;
+            color: #555;
+            cursor: pointer;
+            margin-left: 6px;
+            flex-shrink: 0;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+
+        .cred-edit:hover {
+            color: #ccc;
+        }
+
+        .balance-spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            border-top: 2px solid #fff;
+            animation: spin 0.8s linear infinite;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+
+        .balance-error {
+            color: #e05555;
+            font-size: 11px;
+            flex-shrink: 0;
+            margin-left: 10px;
+            max-width: 80px;
+            text-align: right;
+        }
+
+        /* ========== Token Modal ========== */
+        .token-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .token-modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .token-modal {
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            padding: 28px 24px;
+            width: 380px;
+            max-width: 90vw;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .token-modal-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .token-modal-title span {
+            color: #aaa;
+        }
+
+        .token-modal-hint {
+            color: #999;
+            font-size: 13px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .token-modal-hint a {
+            color: #88b4e0;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .token-modal-hint a:hover {
+            color: #aad0ff;
+        }
+
+        .token-modal input {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.25s;
+            width: 100%;
+        }
+
+        .token-modal input:focus,
+        .token-modal textarea:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .token-modal textarea {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 12px;
+            outline: none;
+            resize: vertical;
+            width: 100%;
+            font-family: monospace;
+            transition: border-color 0.25s;
+        }
+
+        .token-modal input[type="radio"] {
+            width: auto;
+            accent-color: #88b4e0;
+        }
+
+        .token-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-primary {
+            background: rgba(100, 140, 220, 0.45);
+        }
+
+        .btn-primary:hover {
+            background: rgba(100, 140, 220, 0.65);
+        }
+
+        /* ========== Nav Manage Button ========== */
+        .nav-manage-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            margin-top: auto;
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            color: #888;
+            font-size: 13px;
+            transition: all 0.25s ease;
+            background: none;
+            gap: 6px;
+        }
+
+        .nav-manage-btn:hover {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .nav-manage-btn .icon {
+            font-size: 16px;
+        }
+
+        /* ========== Link Management Modal ========== */
+        .link-manage-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s ease;
+        }
+
+        .link-manage-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .link-manage-modal {
+            background: rgba(30, 30, 30, 0.97);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            width: 480px;
+            max-width: 90vw;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .link-manage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .link-manage-header h3 {
+            color: #fff;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .link-manage-close {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .link-manage-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        .link-manage-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .link-manage-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .link-manage-row:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .link-manage-row .order-btns {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .link-manage-row .order-btns button {
+            width: 20px;
+            height: 15px;
+            border: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 9px;
+            cursor: pointer;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .link-manage-row .order-btns button:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.25);
+            color: #fff;
+        }
+
+        .link-manage-row .order-btns button:disabled {
+            opacity: 0.25;
+            cursor: default;
+        }
+
+        .link-manage-row .row-name {
+            color: #ddd;
+            font-size: 14px;
+            flex: 0 0 100px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .link-manage-row .row-url {
+            color: #888;
+            font-size: 12px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .link-manage-row .delete-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: none;
+            color: #e05555;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .link-manage-row .delete-btn:hover {
+            background: rgba(224, 85, 85, 0.15);
+        }
+
+        .link-manage-add {
+            display: flex;
+            gap: 8px;
+            padding: 16px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .link-manage-add input {
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .link-manage-add input:focus {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .link-manage-add input.name-input {
+            flex: 0 0 90px;
+        }
+
+        .link-manage-add input.url-input {
+            flex: 1;
+        }
+
+        .link-manage-add button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(100, 140, 220, 0.45);
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+
+        .link-manage-add button:hover {
+            background: rgba(100, 140, 220, 0.65);
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <!-- <div class="glass-overlay"></div> -->
+    
+    <nav class="sidebar">
+        <div class="sidebar-inner">
+            <div class="nav-menu" id="navMenu">
+                <!-- JS 动态渲染 -->
+            </div>
+            <button class="nav-manage-btn" onclick="openLinkManager()">
+                <span class="icon">+</span> 管理链接
+            </button>
+        </div>
+        <div class="sidebar-hint">悬停此处展开</div>
+    </nav>
+    
+    <!-- Right Sidebar -->
+    <div class="sidebar-toggle" onclick="toggleSidebar()">JM</div>
+    <div class="right-sidebar" id="rightSidebar">
+        <div class="form-container">
+            <h3 style="color: #fff; margin-bottom: 10px;">JMcomicDownloader</h3>
+            <form id="downloadForm">
+                <div class="form-group">
+                    <input type="text" id="albumId" name="album_id" placeholder="输入番号" required>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button type="submit" class="btn" style="width: 100%;">启程</button>
+                </div>
+            </form>
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div class="loading-text">正在下载...</div>
+            </div>
+        </div>
+    </div>
+    <!-- Model Balance Sidebar -->
+    <div class="balance-sidebar-wrapper">
+        <div class="balance-hint">悬停此处展开</div>
+        <div class="balance-panel">
+            <div class="balance-title">模型余额</div>
+            <div class="balance-list" id="balanceList">
+                <!-- JS 动态渲染 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Token Modal -->
+    <div class="token-modal-overlay" id="tokenModal">
+        <div class="token-modal">
+            <div class="token-modal-title">绑定 <span id="tokenModalProvider">-</span></div>
+            <p class="token-modal-hint" id="tokenModalHint">
+                请从 <a id="tokenModalUrl" href="#" target="_blank">API Key 管理页</a> 获取 Token 后粘贴到下方
+            </p>
+            <!-- API Key mode -->
+            <div id="tokenKeyGroup">
+                <input type="password" id="tokenInput" placeholder="粘贴 API Key">
+            </div>
+            <!-- Cookie mode (MiMo / Claude-web) -->
+            <div id="tokenCookieGroup" style="display:none;">
+                <textarea id="tokenCookies" placeholder="粘贴 Cookie 内容&#10;(支持 name=value; 或 Netscape 格式)" rows="4"></textarea>
+                <input type="text" id="tokenOrgId" placeholder="组织 ID (仅 Claude 需要)" style="display:none;margin-top:8px;">
+            </div>
+            <!-- Claude mode toggle -->
+            <div id="tokenClaudeMode" style="display:none;">
+                <label style="color:#aaa;font-size:13px;display:flex;align-items:center;gap:16px;">
+                    <span><input type="radio" name="claudeMode" value="key" checked onchange="toggleClaudeMode()"> Admin API Key</span>
+                    <span><input type="radio" name="claudeMode" value="cookies" onchange="toggleClaudeMode()"> Session Cookie</span>
+                </label>
+            </div>
+            <div class="token-modal-actions">
+                <button class="btn" id="tokenCancel">取消</button>
+                <button class="btn btn-primary" id="tokenSave">保存并查询</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link Management Modal -->
+    <div class="link-manage-overlay" id="linkManageOverlay">
+        <div class="link-manage-modal">
+            <div class="link-manage-header">
+                <h3>管理导航链接</h3>
+                <button class="link-manage-close" onclick="closeLinkManager()">&times;</button>
+            </div>
+            <div class="link-manage-list" id="linkManageList">
+                <!-- JS 动态渲染 -->
+            </div>
+            <div class="link-manage-add">
+                <input class="name-input" id="newLinkName" placeholder="名称" maxlength="12">
+                <input class="url-input" id="newLinkUrl" placeholder="https://...">
+                <button onclick="addLink()">添加</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="result" class="result" style="display: none;"></div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById('rightSidebar').classList.toggle('active');
+        }
+
+        // ========== JMcomicDownloader ==========
+        document.getElementById('downloadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const albumId = document.getElementById('albumId').value;
+            const loadingDiv = document.getElementById('loading');
+            loadingDiv.classList.add('active');
+            fetch('http://localhost:8000/run', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `album_id=${encodeURIComponent(albumId)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingDiv.classList.remove('active');
+                if (data.error) {
+                    alert(`错误: ${data.error}`);
+                } else {
+                    alert(`下载成功！\n文件保存路径: ${data.path || '默认路径'}`);
+                }
+            })
+            .catch(error => {
+                loadingDiv.classList.remove('active');
+                alert(`请求失败: ${error.message}`);
+            });
+        });
+
+        // ========== Model Balance ==========
+
+        const PROVIDERS = [
+            { id: 'deepseek', name: 'DeepSeek', color: '#4F46E5', currency: '¥', credType: 'key',   keyUrl: 'https://platform.deepseek.com/api_keys' },
+            { id: 'claude',   name: 'Claude',   color: '#E07B39', currency: '$', credType: 'claude', keyUrl: 'https://console.anthropic.com/settings/keys' },
+            { id: 'gpt',      name: 'GPT',      color: '#10A37F', currency: '$', credType: 'key',    keyUrl: 'https://platform.openai.com/api-keys' },
+            { id: 'mimo',     name: 'MiMo',     color: '#FF6B6B', currency: '¥', credType: 'cookies', keyUrl: 'https://platform.xiaomimimo.com' },
+            { id: 'gemini',   name: 'Gemini',   color: '#4285F4', currency: '$', credType: 'key',    keyUrl: 'https://aistudio.google.com/app/apikey' },
+        ];
+
+        const STORAGE_PREFIX = 'balance_cred_';
+        let currentBindProvider = null;
+
+        function getCred(providerId) {
+            const raw = localStorage.getItem(STORAGE_PREFIX + providerId);
+            if (!raw) return null;
+            try { return JSON.parse(raw); } catch { return null; }
+        }
+
+        function setCred(providerId, cred) {
+            localStorage.setItem(STORAGE_PREFIX + providerId, JSON.stringify(cred));
+        }
+
+        function hasCred(providerId) {
+            const c = getCred(providerId);
+            if (!c) return false;
+            return !!(c.key || c.cookies);
+        }
+
+        function renderBalanceList() {
+            const list = document.getElementById('balanceList');
+            list.innerHTML = PROVIDERS.map(p => {
+                return `
+                    <div class="balance-item" id="balance-${p.id}">
+                        <div class="balance-dot" style="background:${p.color};color:${p.color};"></div>
+                        <div class="balance-info">
+                            <div class="balance-name">${p.name}</div>
+                            <div class="balance-sub">API 余额</div>
+                        </div>
+                        <div id="balance-value-${p.id}">
+                            <span class="balance-spinner"></span>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            PROVIDERS.forEach(p => {
+                if (hasCred(p.id)) {
+                    fetchBalance(p);
+                } else {
+                    showBindButton(p);
+                }
+            });
+        }
+
+        function showBindButton(provider) {
+            const el = document.getElementById('balance-value-' + provider.id);
+            if (!el) return;
+            el.innerHTML = `<button class="bind-btn" onclick="openTokenModal('${provider.id}')">绑定</button>`;
+            const sub = document.querySelector(`#balance-${provider.id} .balance-sub`);
+            if (sub) sub.textContent = 'API 余额';
+        }
+
+        function showBalance(provider, data) {
+            const el = document.getElementById('balance-value-' + provider.id);
+            if (!el) return;
+            if (data.balance != null) {
+                const cur = data.currency === 'CNY' ? '¥' : (data.currency === 'USD' ? '$' : (data.currency || provider.currency));
+                el.innerHTML = `<span class="balance-amount">${cur}${data.balance}</span>
+                    <span class="cred-edit" onclick="event.stopPropagation();openTokenModal('${provider.id}')" title="修改凭证">✎</span>`;
+            } else if (data.available) {
+                el.innerHTML = `<span class="balance-amount" style="color:#8c8;font-size:13px;">有效</span>
+                    <span class="cred-edit" onclick="event.stopPropagation();openTokenModal('${provider.id}')" title="修改凭证">✎</span>`;
+            } else {
+                el.innerHTML = `<span class="balance-amount" style="color:#e05555;font-size:13px;">不可用</span>
+                    <span class="cred-edit" onclick="event.stopPropagation();openTokenModal('${provider.id}')" title="修改凭证">✎</span>`;
+            }
+            if (data.note) {
+                const sub = document.querySelector(`#balance-${provider.id} .balance-sub`);
+                if (sub) sub.textContent = data.note;
+            }
+        }
+
+        function showBalanceError(provider) {
+            const el = document.getElementById('balance-value-' + provider.id);
+            if (!el) return;
+            el.innerHTML = `<span class="balance-error">查询失败</span>
+                <span class="cred-edit" onclick="event.stopPropagation();openTokenModal('${provider.id}')" title="修改凭证">✎</span>`;
+        }
+
+        async function fetchBalance(provider) {
+            const cred = getCred(provider.id);
+            if (!cred) { showBalanceError(provider); return; }
+            const body = { provider: provider.id };
+            if (cred.key) body.key = cred.key;
+            if (cred.cookies) body.cookies = cred.cookies;
+            if (cred.org_id) body.org_id = cred.org_id;
+            try {
+                const resp = await fetch('/api/balance/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                if (!resp.ok) { showBalanceError(provider); return; }
+                const data = await resp.json();
+                if (data.error) { showBalanceError(provider); return; }
+                showBalance(provider, data);
+            } catch {
+                showBalanceError(provider);
+            }
+        }
+
+        function openTokenModal(providerId) {
+            currentBindProvider = providerId;
+            const p = PROVIDERS.find(x => x.id === providerId);
+            document.getElementById('tokenModalProvider').textContent = p ? p.name : providerId;
+
+            const credType = p ? p.credType : 'key';
+            const hint = document.getElementById('tokenModalHint');
+            const keyGroup = document.getElementById('tokenKeyGroup');
+            const cookieGroup = document.getElementById('tokenCookieGroup');
+            const claudeMode = document.getElementById('tokenClaudeMode');
+
+            // Reset
+            document.getElementById('tokenInput').value = '';
+            document.getElementById('tokenCookies').value = '';
+            document.getElementById('tokenOrgId').value = '';
+
+            if (credType === 'key') {
+                hint.innerHTML = '请从 <a id="tokenModalUrl" href="' + (p ? p.keyUrl : '#') + '" target="_blank">API Key 管理页</a> 获取后粘贴到下方';
+                keyGroup.style.display = 'block';
+                cookieGroup.style.display = 'none';
+                claudeMode.style.display = 'none';
+            } else if (credType === 'cookies') {
+                hint.innerHTML = '浏览器登录 <a id="tokenModalUrl" href="' + (p ? p.keyUrl : '#') + '" target="_blank">' + (p ? p.name : '') + '</a> 后，从 DevTools → Application → Cookies 复制所有 Cookie';
+                keyGroup.style.display = 'none';
+                cookieGroup.style.display = 'block';
+                claudeMode.style.display = 'none';
+                document.getElementById('tokenOrgId').style.display = 'none';
+            } else if (credType === 'claude') {
+                claudeMode.style.display = 'block';
+                document.querySelector('input[name="claudeMode"][value="key"]').checked = true;
+                toggleClaudeMode();
+            }
+
+            // Pre-fill existing credentials when re-editing
+            const existing = getCred(providerId);
+            if (existing) {
+                if (existing.key) {
+                    document.getElementById('tokenInput').value = existing.key;
+                    if (credType === 'claude') {
+                        document.querySelector('input[name="claudeMode"][value="key"]').checked = true;
+                        toggleClaudeMode();
+                    }
+                }
+                if (existing.cookies) {
+                    document.getElementById('tokenCookies').value = existing.cookies;
+                    if (existing.org_id) {
+                        document.getElementById('tokenOrgId').value = existing.org_id;
+                    }
+                    if (credType === 'claude') {
+                        document.querySelector('input[name="claudeMode"][value="cookies"]').checked = true;
+                        toggleClaudeMode();
+                    }
+                }
+            }
+
+            document.getElementById('tokenModal').classList.add('active');
+        }
+
+        function toggleClaudeMode() {
+            const mode = document.querySelector('input[name="claudeMode"]:checked').value;
+            const hint = document.getElementById('tokenModalHint');
+            const keyGroup = document.getElementById('tokenKeyGroup');
+            const cookieGroup = document.getElementById('tokenCookieGroup');
+            if (mode === 'key') {
+                hint.innerHTML = '请从 <a href="https://console.anthropic.com/settings/keys" target="_blank">Anthropic Console</a> 获取 Admin API Key (sk-ant-admin...)';
+                keyGroup.style.display = 'block';
+                cookieGroup.style.display = 'none';
+            } else {
+                hint.innerHTML = '浏览器登录 <a href="https://platform.claude.com" target="_blank">platform.claude.com</a> 后，从 DevTools → Application → Cookies 复制所有 Cookie';
+                keyGroup.style.display = 'none';
+                cookieGroup.style.display = 'block';
+                document.getElementById('tokenOrgId').style.display = 'block';
+            }
+        }
+
+        function closeTokenModal() {
+            document.getElementById('tokenModal').classList.remove('active');
+            currentBindProvider = null;
+        }
+
+        function saveToken() {
+            const p = PROVIDERS.find(x => x.id === currentBindProvider);
+            if (!p) return;
+            const credType = p.credType;
+
+            const cred = {};
+            if (credType === 'key') {
+                cred.key = document.getElementById('tokenInput').value.trim();
+                if (!cred.key) return;
+            } else if (credType === 'cookies') {
+                cred.cookies = document.getElementById('tokenCookies').value.trim();
+                if (!cred.cookies) return;
+            } else if (credType === 'claude') {
+                const mode = document.querySelector('input[name="claudeMode"]:checked').value;
+                if (mode === 'key') {
+                    cred.key = document.getElementById('tokenInput').value.trim();
+                    if (!cred.key) return;
+                } else {
+                    cred.cookies = document.getElementById('tokenCookies').value.trim();
+                    cred.org_id = document.getElementById('tokenOrgId').value.trim();
+                    if (!cred.cookies || !cred.org_id) return;
+                }
+            }
+
+            setCred(currentBindProvider, cred);
+            closeTokenModal();
+            document.getElementById('balance-value-' + p.id).innerHTML = '<span class="balance-spinner"></span>';
+            fetchBalance(p);
+        }
+
+        // Modal events
+        document.getElementById('tokenCancel').addEventListener('click', closeTokenModal);
+        document.getElementById('tokenSave').addEventListener('click', saveToken);
+        document.getElementById('tokenModal').addEventListener('click', function(e) {
+            if (e.target === this) closeTokenModal();
+        });
+        document.getElementById('linkManageOverlay').addEventListener('click', function(e) {
+            if (e.target === this) closeLinkManager();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeTokenModal();
+                closeLinkManager();
+            }
+        });
+
+        // ========== Sidebar Nav Management ==========
+
+        const DEFAULT_LINKS = [
+            { name: 'VidHub',     url: 'https://vidhub.tv/',              icon: '/common/icon/vidhub.png' },
+            { name: 'bilibili',   url: 'https://www.bilibili.com/',       icon: '../common/icon/bilibili.png' },
+            { name: '校园网登录', url: 'http://10.24.127.3/',              icon: '/common/icon/net.png' },
+            { name: 'ikuuu',      url: 'https://ikuuu.nl/auth/login',      icon: '../common/icon/ikuuu.png' },
+            { name: 'GitHub',     url: 'https://github.com/',              icon: '/common/icon/GitHub.png' },
+            { name: '教务系统',   url: 'https://www.hltz.net/hlxy_jsxsd/', icon: '../common/icon/huali.png' },
+            { name: 'Deepseek',   url: 'https://chat.deepseek.com/',       icon: '/common/icon/deepseek.png' },
+            { name: '菜鸟教程',   url: 'https://www.runoob.com/',          icon: '/common/icon/runoob.png' },
+            { name: 'YouTube',    url: 'https://www.youtube.com/',         icon: '/common/icon/icon_YouTube.png' },
+        ];
+
+        const LINKS_STORAGE_KEY = 'sidebar_nav_links';
+
+        function loadLinks() {
+            const raw = localStorage.getItem(LINKS_STORAGE_KEY);
+            if (raw) {
+                try { return JSON.parse(raw); } catch {}
+            }
+            return DEFAULT_LINKS.map(l => ({...l}));
+        }
+
+        function saveLinks(links) {
+            localStorage.setItem(LINKS_STORAGE_KEY, JSON.stringify(links));
+        }
+
+        function renderNavMenu() {
+            const links = loadLinks();
+            const menu = document.getElementById('navMenu');
+            menu.innerHTML = links.map(l => {
+                const inner = l.icon
+                    ? `<img src="${l.icon}"/>`
+                    : `<span style="font-size:14px;">${l.name.charAt(0)}</span>`;
+                return `<a href="${l.url}" class="nav-item" target="_blank">
+                    <div class="nav-icon">${inner}</div>
+                    <span class="nav-text">${l.name}</span>
+                </a>`;
+            }).join('');
+        }
+
+        function openLinkManager() {
+            document.getElementById('linkManageOverlay').classList.add('active');
+            renderLinkManagerList();
+            document.getElementById('newLinkName').value = '';
+            document.getElementById('newLinkUrl').value = '';
+        }
+
+        function closeLinkManager() {
+            document.getElementById('linkManageOverlay').classList.remove('active');
+        }
+
+        function renderLinkManagerList() {
+            const links = loadLinks();
+            const list = document.getElementById('linkManageList');
+            list.innerHTML = links.map((l, i) => `
+                <div class="link-manage-row">
+                    <div class="order-btns">
+                        <button ${i === 0 ? 'disabled' : ''} onclick="moveLink(${i}, -1)" title="上移">▲</button>
+                        <button ${i === links.length - 1 ? 'disabled' : ''} onclick="moveLink(${i}, 1)" title="下移">▼</button>
+                    </div>
+                    <span class="row-name" title="${l.name}">${l.name}</span>
+                    <span class="row-url" title="${l.url}">${l.url}</span>
+                    <button class="delete-btn" onclick="deleteLink(${i})" title="删除">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        function addLink() {
+            const name = document.getElementById('newLinkName').value.trim();
+            const url = document.getElementById('newLinkUrl').value.trim();
+            if (!name || !url) return;
+            const links = loadLinks();
+            links.push({ name, url, icon: null });
+            saveLinks(links);
+            renderNavMenu();
+            renderLinkManagerList();
+            document.getElementById('newLinkName').value = '';
+            document.getElementById('newLinkUrl').value = '';
+        }
+
+        function deleteLink(index) {
+            const links = loadLinks();
+            links.splice(index, 1);
+            saveLinks(links);
+            renderNavMenu();
+            renderLinkManagerList();
+        }
+
+        function moveLink(index, direction) {
+            const links = loadLinks();
+            const ni = index + direction;
+            if (ni < 0 || ni >= links.length) return;
+            [links[index], links[ni]] = [links[ni], links[index]];
+            saveLinks(links);
+            renderNavMenu();
+            renderLinkManagerList();
+        }
+
+        // Init
+        renderNavMenu();
+        renderBalanceList();
+    </script>
+</body>
+</html>
