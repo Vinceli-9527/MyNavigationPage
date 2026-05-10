@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PageSkill Output</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+        line-height: 1.8;
+        color: #2c3e50;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 40px 20px;
+        min-height: 100vh;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 20px;
+        padding: 60px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      }
+      h1 {
+        font-size: 2.5em;
+        color: #667eea;
+        margin-bottom: 0.5em;
+        text-align: center;
+        font-weight: 700;
+      }
+      h2 {
+        font-size: 1.8em;
+        color: #764ba2;
+        margin-top: 1.5em;
+        margin-bottom: 0.8em;
+        padding-bottom: 0.3em;
+        border-bottom: 3px solid #667eea;
+        font-weight: 600;
+      }
+      h3 {
+        font-size: 1.4em;
+        color: #5a67d8;
+        margin-top: 1.2em;
+        margin-bottom: 0.6em;
+        font-weight: 600;
+      }
+      p {
+        margin-bottom: 1em;
+        font-size: 1.1em;
+        color: #4a5568;
+      }
+      ul, ol {
+        margin-left: 2em;
+        margin-bottom: 1.5em;
+      }
+      li {
+        margin-bottom: 0.8em;
+        font-size: 1.05em;
+        color: #4a5568;
+      }
+      strong {
+        color: #667eea;
+        font-weight: 600;
+      }
+      hr {
+        border: none;
+        border-top: 2px dashed #e2e8f0;
+        margin: 2em 0;
+      }
+      code {
+        background: #f7fafc;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 0.9em;
+        color: #e53e3e;
+      }
+      pre {
+        background: #2d3748;
+        color: #e2e8f0;
+        padding: 20px;
+        border-radius: 10px;
+        overflow-x: auto;
+        margin: 1.5em 0;
+      }
+      pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+      blockquote {
+        border-left: 4px solid #667eea;
+        padding-left: 20px;
+        margin: 1.5em 0;
+        color: #718096;
+        font-style: italic;
+      }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MyPersonalWebsite</h1>
+<p>一个集导航主页、下载工具、AI 模型余额查询于一体的个人网站。</p>
+<hr>
+<h2>目录</h2>
+<ul>
+<li><a href="#%E9%9B%B6%E6%88%91%E6%98%AF%E5%AE%8C%E5%85%A8%E4%B8%8D%E6%87%82%E7%94%B5%E8%84%91%E7%9A%84%E5%B0%8F%E7%99%BD%E4%BB%8E%E5%93%AA%E5%BC%80%E5%A7%8B">零、我是完全不懂电脑的小白，从哪开始？</a></li>
+<li><a href="#%E4%B8%80%E5%AE%89%E8%A3%85-python">一、安装 Python</a></li>
+<li><a href="#%E4%BA%8C%E4%B8%8B%E8%BD%BD%E6%9C%AC%E9%A1%B9%E7%9B%AE">二、下载本项目</a></li>
+<li><a href="#%E4%B8%89%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96">三、安装依赖</a></li>
+<li><a href="#%E5%9B%9B%E8%BF%90%E8%A1%8C%E9%A1%B9%E7%9B%AE">四、运行项目</a></li>
+<li><a href="#%E4%BA%94%E8%AE%BF%E9%97%AE%E7%BD%91%E7%AB%99">五、访问网站</a></li>
+<li><a href="#%E5%85%AD%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98">六、常见问题</a></li>
+</ul>
+<hr>
+<h2>零、我是完全不懂电脑的小白，从哪开始？</h2>
+<p><strong>别怕，这份教程就是为你写的。</strong> 你不需要懂编程，只需要会打字、会点击鼠标，跟着下面的步骤一步步来就行。整个过程大约需要 <strong>15～30 分钟</strong>。</p>
+<p>在开始之前，先记住两个概念：</p>
+<blockquote>
+<p><strong>命令行（终端）</strong>：一个黑乎乎的窗口，你在里面打字指挥电脑干活。别被它吓到，你只需要复制粘贴几条命令而已。</p>
+<p><strong>复制粘贴的快捷键</strong>：在命令行窗口里，<code>Ctrl + V</code> 可能不管用。你需要用鼠标右键点击窗口，选择&quot;粘贴&quot;，或者按 <code>Ctrl + Shift + V</code>。</p>
+</blockquote>
+<p>好，开始吧！</p>
+<hr>
+<h2>一、安装 Python</h2>
+<p>本项目是用 Python 语言写的，所以你的电脑需要安装 Python。</p>
+<h3>1. 下载 Python</h3>
+<p>打开浏览器，访问 Python 官网下载页面：</p>
+<pre><code>https://www.python.org/downloads/
+</code></pre>
+<p>页面会自动识别你的操作系统。你会看到一个黄色的大按钮，上面写着类似 <strong>&quot;Download Python 3.12.x&quot;</strong> 的字样。点击它下载。</p>
+<blockquote>
+<p><strong>注意</strong>：版本号可能略有不同，只要是 3.10 或更新的版本都行。</p>
+</blockquote>
+<h3>2. 安装 Python</h3>
+<p>找到你刚下载的文件（通常在&quot;下载&quot;文件夹里），双击打开它。</p>
+<blockquote>
+<p><strong>这一步非常关键！</strong></p>
+</blockquote>
+<p>在安装界面的<strong>最底部</strong>，有一个勾选框写着：</p>
+<pre><code>☐ Add Python 3.x to PATH
+</code></pre>
+<p><strong>一定要勾上这个框！</strong> 勾上之后，框里会显示一个对勾。然后再点击上面的 <strong>&quot;Install Now&quot;</strong>（立即安装）。</p>
+<p>等进度条走完，Python 就装好了。</p>
+<h3>3. 验证安装</h3>
+<p>我们来确认一下 Python 是否装好了。</p>
+<p><strong>Windows 系统</strong>：按键盘上的 <code>Win</code> 键（就是在 <code>Ctrl</code> 和 <code>Alt</code> 之间的那个 Windows 图标键），然后输入 <code>cmd</code>，按回车。一个黑底白字的窗口会弹出来，这就是<strong>命令行</strong>。</p>
+<p><strong>macOS 系统</strong>：按 <code>Command + 空格</code>，输入 <code>Terminal</code>（终端），按回车。</p>
+<p>在这个黑窗口里输入以下命令，然后按回车：</p>
+<pre><code class="language-bash">python --version
+</code></pre>
+<p>如果看到类似 <code>Python 3.12.x</code> 这样的输出，说明安装成功了！</p>
+<blockquote>
+<p>如果提示 &quot;python 不是内部或外部命令&quot;，说明安装时没有勾选 &quot;Add Python to PATH&quot;。请回到第 2 步重新安装，<strong>这次记得勾上那个框</strong>。</p>
+</blockquote>
+<hr>
+<h2>二、下载本项目</h2>
+<h3>方式一：通过 GitHub 下载（推荐）</h3>
+<ol>
+<li>打开本项目的 GitHub 页面</li>
+<li>找到一个绿色的 <strong>&quot;&lt;&gt; Code&quot;</strong> 按钮，点击它</li>
+<li>在弹出的菜单里选择 <strong>&quot;Download ZIP&quot;</strong></li>
+<li>下载完成后，找到这个 ZIP 文件，<strong>右键 → 全部解压缩</strong>，把它解压到一个你方便找到的位置（比如桌面或 D 盘根目录）</li>
+</ol>
+<h3>方式二：用 Git 克隆（如果你会用的话）</h3>
+<pre><code class="language-bash">git clone &lt;本项目 GitHub 地址&gt;
+</code></pre>
+<hr>
+<h2>三、安装依赖</h2>
+<p>&quot;依赖&quot;就是本项目运行所需要的其他软件包。就好比你要吃泡面，除了面饼还需要调料包——这里就是在安装&quot;调料包&quot;。</p>
+<h3>1. 打开项目文件夹</h3>
+<p>先在命令行里进入你刚才解压的项目文件夹。</p>
+<p><strong>简单方法</strong>：在文件管理器里打开项目文件夹，在文件夹的地址栏里直接输入 <code>cmd</code> 然后按回车，命令行就会自动定位到这个文件夹。</p>
+<p>或者手动输入（以下路径仅作示例，请替换成你实际解压的位置）：</p>
+<pre><code class="language-bash">cd C:\Users\你的用户名\Desktop\MyPersonalWebsite
+</code></pre>
+<blockquote>
+<p>提示：输入路径时，可以先输入前几个字母，然后按 <code>Tab</code> 键自动补全。</p>
+</blockquote>
+<h3>2. 创建虚拟环境</h3>
+<p>&quot;虚拟环境&quot;相当于给本项目划出一块独立的干净区域，不会跟你电脑上其他 Python 项目打架。</p>
+<p>在命令行里输入：</p>
+<pre><code class="language-bash">python -m venv .venv
+</code></pre>
+<p>这个命令会创建一个叫 <code>.venv</code> 的文件夹。<strong>这一步需要几十秒，请耐心等待。</strong> 执行完后不会有任何提示，这是正常的。</p>
+<h3>3. 激活虚拟环境</h3>
+<p><strong>Windows</strong>：</p>
+<pre><code class="language-bash">.venv\Scripts\activate
+</code></pre>
+<p><strong>macOS / Linux</strong>：</p>
+<pre><code class="language-bash">source .venv/bin/activate
+</code></pre>
+<p>执行后，你会看到命令行的最前面多了一个 <code>(.venv)</code> 的标志，像这样：</p>
+<pre><code>(.venv) C:\Users\...\MyPersonalWebsite&gt;
+</code></pre>
+<p>这说明虚拟环境激活成功了！</p>
+<h3>4. 安装依赖</h3>
+<p>确保命令行前面有 <code>(.venv)</code> 标志，然后输入：</p>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<p>你会看到很多文字刷刷地滚过去，这是 pip 在下载和安装依赖。<strong>这一步可能需要几分钟，取决于你的网络速度。</strong></p>
+<p>看到最后一行出现 <strong>&quot;Successfully installed ...&quot;</strong> 就说明安装成功了。</p>
+<hr>
+<h2>四、运行项目</h2>
+<h3>1. 启动后端服务</h3>
+<p>确保命令行前面有 <code>(.venv)</code> 标志，然后输入：</p>
+<pre><code class="language-bash">python backend/app.py
+</code></pre>
+<p>你会看到类似以下的输出：</p>
+<pre><code> * Serving Flask app &#39;app&#39;
+ * Debug mode: on
+WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://127.0.0.1:8000
+</code></pre>
+<p>看到 <strong>&quot;Running on <a href="http://127.0.0.1:8000">http://127.0.0.1:8000</a>&quot;</strong> 这一行，说明后端已经成功启动了！</p>
+<blockquote>
+<p><strong>注意</strong>：这个命令行窗口<strong>不要关掉</strong>。关了后端就停了，网站就用不了了。</p>
+</blockquote>
+<h3>2. 如果启动报错</h3>
+<p>如果你看到类似以下错误：</p>
+<pre><code>ModuleNotFoundError: No module named &#39;jmcomic&#39;
+</code></pre>
+<p>说明虚拟环境没有激活或依赖没有装好。请回到<a href="#3-%E6%BF%80%E6%B4%BB%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83">第三步第 3 小步</a>，确认命令行前面有 <code>(.venv)</code>，然后重新执行第 4 小步的安装命令。</p>
+<hr>
+<h2>五、访问网站</h2>
+<ol>
+<li>打开你的浏览器（Chrome、Edge、Firefox 都行）</li>
+<li>在地址栏输入：<strong><code>http://127.0.0.1:8000</code></strong></li>
+<li>按回车</li>
+</ol>
+<p>你应该能看到网站的主页了！左侧有一个悬浮的导航栏（鼠标移上去会展开），包含各种快捷链接。</p>
+<h3>网站功能简介</h3>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>位置</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>导航链接</td>
+<td>左侧悬浮栏</td>
+<td>鼠标移到左侧边缘，导航栏会弹出，包含常用链接</td>
+</tr>
+<tr>
+<td>JMcomic 下载器</td>
+<td>右侧 JM 按钮</td>
+<td>点击右侧圆形按钮，输入番号即可下载</td>
+</tr>
+<tr>
+<td>AI 模型余额查询</td>
+<td>右侧悬浮栏</td>
+<td>鼠标移到右侧中部边缘，可查看各 AI 平台的余额</td>
+</tr>
+</tbody></table>
+<h3>使用余额查询功能</h3>
+<ol>
+<li>鼠标移到页面右侧中部，余额面板会展开</li>
+<li>点击每个模型旁的 <strong>&quot;绑定&quot;</strong> 按钮</li>
+<li>在弹出的窗口中粘贴你的 <strong>API Key</strong>（需要先去对应的平台获取）</li>
+<li>点击 <strong>&quot;保存并查询&quot;</strong>，余额就会显示出来</li>
+</ol>
+<p><strong>各平台获取 API Key 的地址</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>平台</th>
+<th>获取地址</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DeepSeek</td>
+<td><a href="https://platform.deepseek.com/api_keys">https://platform.deepseek.com/api_keys</a></td>
+</tr>
+<tr>
+<td>Claude / Anthropic</td>
+<td><a href="https://console.anthropic.com/settings/keys">https://console.anthropic.com/settings/keys</a></td>
+</tr>
+<tr>
+<td>GPT / OpenAI</td>
+<td><a href="https://platform.openai.com/api-keys">https://platform.openai.com/api-keys</a></td>
+</tr>
+<tr>
+<td>MiMo / 小米</td>
+<td><a href="https://platform.xiaomimimo.com">https://platform.xiaomimimo.com</a></td>
+</tr>
+<tr>
+<td>Gemini / Google</td>
+<td><a href="https://aistudio.google.com/app/apikey">https://aistudio.google.com/app/apikey</a></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p><strong>关于安全性</strong>：你输入的 API Key 只保存在你自己的浏览器里（localStorage），不会上传到服务器或写入任何文件。每次查询余额时，Key 仅用于当次请求。</p>
+</blockquote>
+<hr>
+<h2>六、常见问题</h2>
+<h3>Q: 运行 <code>python backend/app.py</code> 时提示 &quot;No module named &#39;flask&#39;&quot;</h3>
+<p>A: 虚拟环境没有激活。先执行：</p>
+<ul>
+<li>Windows: <code>.venv\Scripts\activate</code></li>
+<li>macOS: <code>source .venv/bin/activate</code></li>
+</ul>
+<p>确认命令行前面显示了 <code>(.venv)</code>，再执行 <code>pip install -r requirements.txt</code>。</p>
+<h3>Q: 浏览器打开 <code>http://127.0.0.1:8000</code> 显示&quot;无法访问&quot;</h3>
+<p>A: 检查一下那个命令行窗口还在不在、有没有报错信息。如果关了，重新执行 <code>python backend/app.py</code>。</p>
+<h3>Q: 怎么停止后端？</h3>
+<p>A: 在运行后端的命令行窗口里按 <code>Ctrl + C</code>，后端就会停止。</p>
+<h3>Q: 我想换一个端口（默认是 8000），怎么办？</h3>
+<p>A: 打开 <code>backend/app.py</code>，找到最后一行 <code>app.run(debug=True, port=8000)</code>，把 <code>8000</code> 改成你想要的端口号，比如 <code>8080</code>：</p>
+<pre><code class="language-python">app.run(debug=True, port=8080)
+</code></pre>
+<p>然后重启后端，访问 <code>http://127.0.0.1:8080</code> 即可。</p>
+<h3>Q: 下载功能怎么配置？</h3>
+<p>A: 编辑项目根目录下的 <code>option.yml</code> 文件，根据 <a href="https://github.com/tonquer/jmcomic">jmcomic 文档</a> 配置下载选项。</p>
+<h3>Q: 我想把这个网站部署到公网上让别人访问，怎么做？</h3>
+<p>A: 这就不是&quot;小白教程&quot;的范畴了，简单说你需要：</p>
+<ol>
+<li>一台云服务器</li>
+<li>把项目传上去</li>
+<li>使用 <code>gunicorn</code> 或 <code>waitress</code> 代替 Flask 自带的开发服务器</li>
+<li>配置 Nginx 反向代理</li>
+</ol>
+<p>建议搜索&quot;Flask 部署教程&quot;了解详情。</p>
+<h3>Q: Windows 的杀毒软件报毒？</h3>
+<p>A: Python 和 Flask 都是开源的正规软件，不会包含病毒。这是因为杀毒软件有时会误报。如果你从 Python 官网和 GitHub 下载，请放心使用。如果实在不放心，可以把项目文件夹加入杀毒软件的&quot;排除列表&quot;。</p>
+<hr>
+<h2>项目结构</h2>
+<pre><code>MyPersonalWebsite/
+├── backend/             # 后端 Flask 服务
+│   ├── app.py           # 主程序入口
+│   └── check_balance.py # 余额查询模块
+├── backend1/            # 下载文件存放目录
+│   └── download/
+├── common/              # 静态资源
+│   ├── icon/            # 网站图标
+│   └── img/             # 背景图片
+├── frontend/            # 前端页面
+│   └── index.html       # 网站唯一页面
+├── option.yml           # jmcomic 下载配置
+├── requirements.txt     # Python 依赖列表
+└── .gitignore           # Git 忽略规则
+</code></pre>
+
+    </div>
+</body>
+</html>
