@@ -3,15 +3,11 @@ from flask_cors import CORS
 import sys
 import io
 import os
-import jmcomic
 import requests as http_requests
 from check_balance import parse_cookies
 
 app = Flask(__name__)
 CORS(app)
-
-# 创建option对象
-option = jmcomic.create_option_by_file(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'option.yml'))
 
 @app.route('/')
 def index():
@@ -21,37 +17,7 @@ def index():
 def serve_common(path):
     return send_from_directory('../common', path)
 
-@app.route('/run', methods=['POST'])
-def run_script():
-    album_id = request.form.get('album_id')
-    if not album_id:
-        return jsonify({'error': '请输入相册ID'}), 400
-    
-    # 执行实际的下载逻辑
-    try:
-        # 捕获标准输出和标准错误
-        old_stdout = sys.stdout
-        old_stderr = sys.stderr
-        sys.stdout = io.StringIO()
-        sys.stderr = io.StringIO()
-        
-        # 执行下载
-        jmcomic.download_album(album_id, option)
-        
-        # 获取输出
-        stdout = sys.stdout.getvalue()
-        stderr = sys.stderr.getvalue()
-        
-        # 恢复标准输出和标准错误
-        sys.stdout = old_stdout
-        sys.stderr = old_stderr
-        
-        # 确定文件保存路径
-        save_path = os.path.join(os.getcwd(), album_id)
-        
-        return jsonify({'message': '下载成功', 'output': stdout, 'path': save_path})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+# 注: 旧的 /run 写盘下载路由已移除，下载功能迁移至 backend/downloader/main.py (holy-dl, 零落盘流式)
 
 # ========== Balance API ==========
 # Credentials are stored in the browser (localStorage) and sent with each request.
@@ -361,4 +327,4 @@ def query_balance():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000)
+    app.run(host='0.0.0.0', port=8000)

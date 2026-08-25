@@ -1,0 +1,9 @@
+services:
+  web:
+    build: ..
+    container_name: Holy
+    ports:
+      - "80:8000"
+    volumes:
+      - ./:/app
+    restart: unless-stopped

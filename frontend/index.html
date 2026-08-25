@@ -860,7 +860,10 @@
             <h3 style="color: #fff; margin-bottom: 10px;">JMcomicDownloader</h3>
             <form id="downloadForm">
                 <div class="form-group">
-                    <input type="text" id="albumId" name="album_id" placeholder="输入番号" required>
+                    <input type="text" id="albumId" name="album_id" placeholder="输入番号(纯数字)" required>
+                </div>
+                <div class="form-group" id="dlTokenGroup" style="display:none;">
+                    <input type="password" id="dlToken" placeholder="下载令牌(公网HTTPS访问必填)" autocomplete="off">
                 </div>
                 <div style="margin-top: 20px;">
                     <button type="submit" class="btn" style="width: 100%;">启程</button>
@@ -868,8 +871,9 @@
             </form>
             <div class="loading" id="loading">
                 <div class="spinner"></div>
-                <div class="loading-text">正在下载...</div>
+                <div class="loading-text" id="loadingText">正在下载...</div>
             </div>
+            <div class="result" id="dlStatus" style="display:none;"></div>
         </div>
     </div>
     <!-- Model Balance Sidebar -->
@@ -938,30 +942,78 @@
             document.getElementById('rightSidebar').classList.toggle('active');
         }
 
-        // ========== JMcomicDownloader ==========
-        document.getElementById('downloadForm').addEventListener('submit', function(e) {
+        // ========== JMcomicDownloader (零落盘流式下载, 需下载令牌) ==========
+        const DL_TOKEN_KEY = 'dl_token';
+
+        function dlShowStatus(msg, type) {
+            const s = document.getElementById('dlStatus');
+            s.style.display = 'block';
+            s.className = 'result ' + (type === 'error' ? 'error' : 'success');
+            s.textContent = msg;
+        }
+
+        const DL_IS_HTTPS = location.protocol === 'https:';
+        document.getElementById('dlTokenGroup').style.display = DL_IS_HTTPS ? 'block' : 'none';
+        document.getElementById('dlToken').value = localStorage.getItem(DL_TOKEN_KEY) || '';
+        document.getElementById('dlToken').addEventListener('change', function() {
+            localStorage.setItem(DL_TOKEN_KEY, this.value.trim());
+        });
+
+        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const albumId = document.getElementById('albumId').value;
+            const albumId = document.getElementById('albumId').value.trim();
+            const token = document.getElementById('dlToken').value.trim();
             const loadingDiv = document.getElementById('loading');
+            const loadingText = document.getElementById('loadingText');
+
+            if (!/^\d{1,12}$/.test(albumId)) {
+                dlShowStatus('番号格式错误：仅允许 1-12 位纯数字', 'error');
+                return;
+            }
+            if (DL_IS_HTTPS && !token) {
+                dlShowStatus('公网 HTTPS 访问需要下载令牌（在 NAS 部署目录 deploy/secret/dl-token.txt 中）', 'error');
+                return;
+            }
+            localStorage.setItem(DL_TOKEN_KEY, token);
+            dlShowStatus('', 'success');
             loadingDiv.classList.add('active');
-            fetch('/run', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `album_id=${encodeURIComponent(albumId)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingDiv.classList.remove('active');
-                if (data.error) {
-                    alert(`错误: ${data.error}`);
-                } else {
-                    alert(`下载成功！\n文件保存路径: ${data.path || '默认路径'}`);
+            loadingText.textContent = '正在连接下载服务...';
+
+            try {
+                const hdrs = {};
+                if (token) hdrs['X-DL-Token'] = token;
+                const resp = await fetch('/api/download?album_id=' + encodeURIComponent(albumId), { headers: hdrs });
+                if (!resp.ok) {
+                    let msg = 'HTTP ' + resp.status;
+                    try { const j = await resp.json(); if (j.detail) msg = j.detail; } catch (e) {}
+                    throw new Error(msg);
                 }
-            })
-            .catch(error => {
+
+                const reader = resp.body.getReader();
+                const chunks = [];
+                let received = 0;
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    chunks.push(value);
+                    received += value.length;
+                    loadingText.textContent = '正在下载并打包: ' + (received / 1048576).toFixed(1) + ' MB ...';
+                }
+
+                const blob = new Blob(chunks);
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'JM-' + albumId + '.zip';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                URL.revokeObjectURL(a.href);
                 loadingDiv.classList.remove('active');
-                alert(`请求失败: ${error.message}`);
-            });
+                dlShowStatus('下载完成！已保存 JM-' + albumId + '.zip（NAS 硬盘零残留）', 'success');
+            } catch (error) {
+                loadingDiv.classList.remove('active');
+                dlShowStatus('下载失败: ' + error.message, 'error');
+            }
         });
 
         // ========== Model Balance ==========

@@ -1,0 +1,18 @@
+.venv
+__pycache__
+*.pyc
+.git
+docker
+deploy
+scripts
+backend1/download
+backend1/tokens.json
+.gitignore
+.dockerignore
+README.md
+
+# 大体积内容 - 不进构建上下文
+backend1/
+HACKING*
+wheels/
+deploy/backup/

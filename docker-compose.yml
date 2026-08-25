@@ -1,0 +1,66 @@
+services:
+  web:
+    build: .
+    image: mypersonalwebsite-web
+    container_name: holy-web
+    ports:
+      - "8080:8000"
+    volumes:
+      # 相对路径: 以本文件所在目录(项目根)为基准, 不依赖具体部署位置
+      - ./:/app
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+
+  # 局域网 DNS (dnsmasq)
+  # 注意: 域名与解析目标 IP 在 deploy/dnsmasq/dnsmasq.conf 中配置(含示例值, 请按你的环境修改)
+  dns:
+    image: alpine:3.19
+    container_name: holy-dns
+    network_mode: host
+    volumes:
+      - ./deploy/dnsmasq/dnsmasq.conf:/etc/dnsmasq.conf:ro
+    command: >
+      sh -c "apk add --no-cache dnsmasq >/dev/null 2>&1 &&
+             exec dnsmasq --no-daemon"
+    restart: unless-stopped
+
+  # 局域网/公网反向代理 (Caddy, 80 端口)
+  # 注意: 站点域名在 deploy/caddy/Caddyfile 中配置(含示例值, 请按你的环境修改)
+  proxy:
+    image: caddy:2-alpine
+    container_name: holy-proxy
+    network_mode: host
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+    restart: unless-stopped
+
+  # Tailscale Funnel: 公网 HTTPS (域名 = 你的Tailscale设备名.ts.net)
+  ts:
+    image: tailscale/tailscale:latest
+    container_name: holy-ts
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    entrypoint: tailscaled
+    command: ["--statedir=/var/lib/tailscale"]
+    volumes:
+      - /var/lib/tailscale:/var/lib/tailscale
+    restart: unless-stopped
+
+  # 零落盘流式下载服务 (FastAPI)
+  dl:
+    build: .
+    image: mypersonalwebsite-web
+    container_name: holy-dl
+    command: ["python3", "-m", "uvicorn", "backend.downloader.main:app", "--host", "0.0.0.0", "--port", "8001", "--workers", "1"]
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./:/app
+    env_file:
+      - ./deploy/secret/dl.env
+    restart: unless-stopped

@@ -1,0 +1,35 @@
+# holy-proxy — 统一反向代理 (Caddy, 80 端口)
+# ⚠️ 模板说明:
+#   - your-nas.local 为示例局域网域名（作者环境的占位），请换成你自己的（需与 dnsmasq.conf 一致）。
+#   - your-device.tailnet.ts.net 为示例公网域名（你的 Tailscale 设备域名，形如 <设备名>.<尾缀>.ts.net），
+#     请替换为你实际执行 `tailscale funnel status` 后显示的域名。
+#   - 部署时请勿把真实域名提交到公开仓库。
+
+# 局域网域名
+http://your-nas.local {
+    handle /api/download* {
+        reverse_proxy 127.0.0.1:8001 {
+            header_up X-Access-Scope lan
+        }
+    }
+    handle {
+        reverse_proxy 127.0.0.1:8080
+    }
+}
+
+# 公网域名 (Tailscale Funnel -> 本机 80)
+http://your-device.tailnet.ts.net {
+    handle /api/download* {
+        reverse_proxy 127.0.0.1:8001 {
+            header_up X-Access-Scope public
+        }
+    }
+    handle {
+        reverse_proxy 127.0.0.1:8080
+    }
+}
+
+# 其它请求: 保持 fnOS 原体验 (跳转 5666 管理界面)
+:80 {
+    redir http://{host}:5666{uri} 302
+}
